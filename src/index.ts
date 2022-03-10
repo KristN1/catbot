@@ -10,11 +10,16 @@ client.once("ready", () => {
     console.log("Ready!");
 });
 
+async function genUrl(base: string) {
+    var r = (Math.random() + 1).toString(36).substring(7);
+    return `${base}?${r}`;
+}
+
 async function genEmbed(title: string, image: string) {
     if (client.user) {
         const embed = new MessageEmbed()
             .setTitle(title)
-            .setColor("#026799")
+            .setColor("#2572f7")
             .setImage(image)
             .setTimestamp()
             .setFooter({ text: client.user.username, iconURL: `${client.user.avatarURL()}` });
@@ -23,14 +28,19 @@ async function genEmbed(title: string, image: string) {
         return null;
     }
 }
+
 client.on("messageCreate", async message => {
     const msgContent = message.content.toLowerCase();
-    console.log(msgContent);
-    console.log(config.triggers.cat);
+
     if (config.triggers.cat.find(x => msgContent.includes(x))) {
-        const embed = await genEmbed("Cat 🐈", "https://cataas.com/cat");
+        const embed = await genEmbed("Cat 🐈", await(genUrl("https://cataas.com/cat")));
         if (embed) {
-            message.channel.send({embeds: [embed]});
+            message.reply({embeds: [embed], allowedMentions: {repliedUser: false}});
+        }
+    } else if (config.triggers.thisperson.find(x => msgContent.includes(x))) {
+        const embed = await genEmbed("This person does not exist 🤔", await(genUrl("https://thispersondoesnotexist.com/image")));
+        if (embed) {
+            message.reply({embeds: [embed], allowedMentions: {repliedUser: false}});
         }
     }
 });
