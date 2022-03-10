@@ -8,6 +8,8 @@ export const client = new Client({
 
 client.once("ready", () => {
     console.log("Ready!");
+
+    client.user?.setActivity("🐈", { type: "WATCHING" });
 });
 
 async function genUrl(base: string) {
@@ -24,8 +26,6 @@ async function genEmbed(title: string, image: string) {
             .setTimestamp()
             .setFooter({ text: client.user.username, iconURL: `${client.user.avatarURL()}` });
         return embed;
-    } else {
-        return null;
     }
 }
 
